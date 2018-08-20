@@ -2,7 +2,7 @@
 // TypeWriter: slice
 // Directive: +gen on CollectionResult
 
-package main
+package catalogueoflife
 
 // CollectionResultSlice is a slice of type CollectionResult. Use it where you would use []CollectionResult.
 type CollectionResultSlice []CollectionResult
@@ -15,4 +15,12 @@ func (rcv CollectionResultSlice) Where(fn func(CollectionResult) bool) (result C
 		}
 	}
 	return result
+}
+
+// SelectString projects a slice of string from CollectionResultSlice, typically called a map in other frameworks. See: http://clipperhouse.github.io/gen/#Select
+func (rcv CollectionResultSlice) SelectString(fn func(CollectionResult) string) (result []string) {
+	for _, v := range rcv {
+		result = append(result, fn(v))
+	}
+	return
 }
