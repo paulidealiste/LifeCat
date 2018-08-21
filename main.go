@@ -2,6 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
+
+	"github.com/paulidealiste/LifeCat/itis"
 )
 
 func main() {
@@ -16,4 +19,8 @@ func main() {
 
 	// todex := catalogueoflife.ReadAndUnmarsh(t1, t2)
 	// catalogueoflife.PrintTaxon(&todex)
+
+	godex := itis.ReadAndUnmarsh(t1, t2)
+	fmt.Println(godex)
+
 }
