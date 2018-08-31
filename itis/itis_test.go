@@ -5,6 +5,6 @@ import (
 )
 
 func TestPrintTaxon(t *testing.T) {
-	tox := ReadAndUnmarsh("Umbra", "krameri")
+	tox := ReadAndUnmarsh("Canis", "latrans")
 	PrintTaxon(&tox)
 }

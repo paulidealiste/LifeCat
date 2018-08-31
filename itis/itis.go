@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/paulidealiste/LifeCat/lifecatutil"
 )
 
 //Hierarchy describes one OTU
@@ -79,7 +81,7 @@ func ReadAndUnmarsh(t1 string, t2 string) Container {
 
 // PrintTaxon prints the requested taxon, its author and its classification along with its common names
 func PrintTaxon(godex *Container) {
-	fmt.Printf("Taxa for ITIS request %s\n", godex.TaxonInfos.SelectString(getTaxas))
+	fmt.Printf("Taxa for ITIS request %s\n", lifecatutil.MockUnique(godex.TaxonInfos.SelectString(getTaxas)))
 	for _, info := range godex.TaxonInfos {
 		fmt.Println()
 		fmt.Printf("-%s (%s)\n", info.ScientificName, info.Author)
@@ -91,6 +93,7 @@ func PrintTaxon(godex *Container) {
 	fmt.Println("Classification:")
 	fmt.Println()
 	for _, class := range godex.Hierarchy {
+		fmt.Println()
 		for _, inclass := range class.HierarchyList {
 			fmt.Printf("%s: %s \n", inclass.RankName, inclass.TaxonName)
 		}

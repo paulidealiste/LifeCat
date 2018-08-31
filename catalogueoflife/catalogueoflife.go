@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/paulidealiste/LifeCat/lifecatutil"
 )
 
 // HigherTaxa encompasses some of the fields from full catalogueoflife
@@ -54,7 +56,7 @@ func ReadAndUnmarsh(t1 string, t2 string) CollectionObject {
 func PrintTaxon(todex *CollectionObject) {
 	ranks := todex.Results.SelectString(getRanks)
 	fmt.Println()
-	fmt.Printf("Taxa for Catalogue of Life request: %s\n", mockUniqe(ranks))
+	fmt.Printf("Taxa for Catalogue of Life request: %s\n", lifecatutil.MockUnique(ranks))
 	for _, rnk := range ranks {
 		rankfilter := func(cr CollectionResult) bool { return cr.Rank == rnk }
 		onlytx := todex.Results.Where(rankfilter)
@@ -62,7 +64,7 @@ func PrintTaxon(todex *CollectionObject) {
 		fmt.Println("Classification:")
 		for _, tdc := range onlytx {
 			fmt.Println()
-			fmt.Printf("-%s (%s)\n", tdc.Name, getAuthor(tdc.AuthoredName))
+			fmt.Printf("%s: %s (%s)\n", tdc.Rank, tdc.Name, getAuthor(tdc.AuthoredName))
 			fmt.Println()
 			for _, cls := range tdc.Classification {
 				fmt.Printf("%s: %s\n", cls.Rank, cls.Name)
@@ -78,16 +80,4 @@ func getAuthor(anm string) string {
 
 func getRanks(cr CollectionResult) string {
 	return cr.Rank
-}
-
-func mockUniqe(forst []string) []string {
-	u := make([]string, 0, len(forst))
-	m := make(map[string]bool)
-	for _, vava := range forst {
-		if _, ok := m[vava]; !ok {
-			m[vava] = true
-			u = append(u, vava)
-		}
-	}
-	return u
 }
