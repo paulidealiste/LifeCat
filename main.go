@@ -9,7 +9,7 @@ import (
 )
 
 type argT struct {
-	Help    bool   `cli:"h, help" usage"Shows gratuitous help"`
+	Help    bool   `cli:"h, help" usage:"Shows gratuitous help"`
 	Taxon   string `cli:"t,taxon" usage:"Genus or higher taxon latin name"`
 	Species string `cli:"s,species" usage:"Species latin name"`
 	CatLif  bool   `cli:"c, catlif" usage:"Use Catalogue of Life API" dft:"false"`
@@ -36,19 +36,30 @@ func main() {
 				fmt.Println()
 				ctx.String("%s %s %s\n", ctx.Color().Blue("Await for the info on"), argv.Taxon, argv.Species)
 				fmt.Println()
+				requests := 0
 				if argv.CatLif {
 					ctx.String("%s\n", ctx.Color().Green("An API and a database from http://www.catalogueoflife.org will be used."))
 					go musterCatLif(argv.Taxon, argv.Species, lifchan, ctx)
+					requests++
 				}
 				if argv.Itis {
 					ctx.String("%s\n", ctx.Color().Green("An API and a database from https://www.itis.gov will be used."))
 					go musterITIS(argv.Taxon, argv.Species, itischan, ctx)
+					requests++
 				}
-				select {
-				case lifob := <-lifchan:
-					catalogueoflife.PrintTaxon(lifob)
-				case itsob := <-itischan:
-					itis.PrintTaxon(itsob)
+				for i := 0; i < requests; i++ {
+					select {
+					case lifob := <-lifchan:
+						fmt.Println()
+						ctx.String("%s\n", ctx.Color().Cyan("Catalogue of Life results"))
+						fmt.Println()
+						catalogueoflife.PrintTaxon(lifob)
+					case itsob := <-itischan:
+						fmt.Println()
+						ctx.String("%s\n", ctx.Color().Cyan("ITIS results"))
+						fmt.Println()
+						itis.PrintTaxon(itsob)
+					}
 				}
 			} else {
 				ctx.String("%s\n", ctx.Color().Red("Neither of the available APIs was selected."))

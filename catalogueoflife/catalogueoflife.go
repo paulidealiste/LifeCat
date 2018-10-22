@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 
 	"github.com/paulidealiste/LifeCat/lifecatutil"
 )
@@ -74,8 +73,7 @@ func PrintTaxon(todex *CollectionObject) {
 }
 
 func getAuthor(anm string) string {
-	mumn := strings.LastIndex(anm, ">")
-	return anm[mumn+2:]
+	return anm
 }
 
 func getRanks(cr CollectionResult) string {
